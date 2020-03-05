@@ -33,7 +33,7 @@ const CompoundToken = (deployedAddr, { web3, decCoin, decUnder }) => {
       .methods
       .exchangeRateCurrent()
       .call(toHex(blkNum));
-    cache.exchangeRateCurrent = BN(rateConvertor.fromNative(rawN)).toPrecision(7);
+    cache.exchangeRateCurrent = BN(rateConvertor.fromNative(rawN));
     return rawN;
   };
 
@@ -43,7 +43,7 @@ const CompoundToken = (deployedAddr, { web3, decCoin, decUnder }) => {
       .exchangeRateStored()
       .call(toHex(blkNum));
     // cache.exchangeRateStored = rateConvertor.fromNative(rawN);
-    cache.exchangeRateStored = BN(rateConvertor.fromNative(rawN)).toPrecision(7);
+    cache.exchangeRateStored = BN(rateConvertor.fromNative(rawN));
     // console.log(cache);
     return rawN;
   };

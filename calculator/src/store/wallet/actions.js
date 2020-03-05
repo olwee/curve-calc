@@ -22,37 +22,16 @@ const setWeb3Provider = async ({ commit, state, dispatch }, cfg) => {
     commit(types.SET_WEB3_PROVIDER, web3js);
     // Load Compound Tokens
     dispatch('compound/hookInit', web3js, { root: true });
-    /*
-    // Load OneSplit
-    dispatch('onesplit/setOneSplitConfig', {}, { root: true });
-    dispatch('curvefi/setCurveConfig', {}, { root: true });
-    // Refresh Account
-    dispatch('refreshAccount');
-    // Add ERC20 Coins
-    const coinList = Object.keys(coinMap);
-    const coinContracts = coinList.reduce((acc, coin) => {
-      const contract = new web3js.eth.Contract(
-        ERC20ABI,
-        coinMap[coin],
-        { from: accountAddress },
-      );
-      return { ...acc, [coin]: contract };
-    }, {}); 
-    commit(types.SET_TOKEN_CONTRACTS, coinContracts);
-    const tokenBalances = coinList.reduce((acc, coin) => {
-      return { ...acc, [coin]: '0.000' };
-    }, {});
-    commit(types.SET_TOKEN_BALANCES, tokenBalances);
-    */
+    // Load Curve
+    dispatch('curveV4/hookInit', web3js, { root: true });
     // Subscribe to New Block Headers
     web3js.eth.subscribe('newBlockHeaders', (err, blockRes) => {
       if (!err) {
         const { number: newBlockHeight } = blockRes;
         commit(types.SET_BLOCK_HEIGHT, newBlockHeight);
-        /*
-          dispatch('refreshAccount');
-          dispatch('curvefi/refreshAllowances', {}, { root: true });
-        */
+        // Fire Hooks
+        dispatch('compound/hookNewBlock', web3js, { root: true });
+        dispatch('curveV4/hookNewBlock', web3js, { root: true });
       }
     });
   } else {

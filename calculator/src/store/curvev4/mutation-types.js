@@ -1,0 +1,2 @@
+export const SET_CURVE_INST = 'SET_CURVE_INST';
+export const SET_CURVE_CACHE = 'SET_CURVE_CACHE';

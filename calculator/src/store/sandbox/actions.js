@@ -30,11 +30,14 @@ const hookNewBlock = async ({ state, commit }) => {
       token.supplyRatePerBlock(),
     ];
     await Promise.all(tasks);
+    console.log(token.cache);
     commit(types.SET_TOKEN, { name: t, token });
     commit(types.SET_TOKEN_CACHE, { name: t, tokenCache: token.cache });
   };
   const tokenTasks = tokenList.map(updater);
+  console.log('Run all tasks');
   await Promise.all(tokenTasks);
+  console.log('Completed all tasks');
 };
 
 export {
