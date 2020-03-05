@@ -15,12 +15,13 @@
         </b-navbar-item>
       </template>
     </b-navbar>
+    <div class="padded-top">&nbsp;</div>
     <div class="tile is-ancestor">
       <div class="tile is-3">
         <curve-box />
       </div> <!-- End of Curve Box Section -->
       <div class="tile is-6">
-
+        <sandbox />
       </div> <!-- End of Meat Section -->
       <div class="tile is-3 is-vertical is-parent">
         <compound-box />
@@ -33,6 +34,7 @@
 // @ is an alias to /src
 import CompoundBox from '@/components/CompoundBox.vue';
 import CurveBox from '@/components/CurveBox.vue';
+import Sandbox from '@/components/Sandbox.vue';
 
 export default {
   name: 'Home',
@@ -40,6 +42,7 @@ export default {
     // HelloWorld,
     'compound-box': CompoundBox,
     'curve-box': CurveBox,
+    sandbox: Sandbox,
   },
   filters: {
     sumaddr(x) { return `${x.substr(0, 6)}...${x.substr(x.length - 6, x.length)}`; },
@@ -53,3 +56,6 @@ export default {
   },
 };
 </script>
+<style lang="sass">
+.padded-top { margin-bottom: 1rem; }
+</style>

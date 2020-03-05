@@ -33,7 +33,7 @@ const SandBox = ({
 
   const tokens = {};
 
-  const fcopy = (n) => BN(n.toFixed());
+  const fcopy = (n) => new BN(n.toFixed());
 
   // Internal
   const getD = (XP) => {
@@ -134,6 +134,13 @@ const SandBox = ({
   };
   // External
 
+  const getVirtD = () => {
+    const rates = getCurrentRates();
+    const currentBalances = inst.balances.map((b) => fcopy(b));
+    const D = getDMem(rates, currentBalances);
+    return D;
+  };
+
   const getVirtPx = () => {
     const storedRates = getStoredRates();
     const xp = getXP(storedRates);
@@ -167,6 +174,7 @@ const SandBox = ({
       const diffAmt = BN(amts[idx]);
       return b.plus(diffAmt);
     });
+
     const D1 = getDMem(rates, newBalances);
     let D2 = fcopy(D1);
     // Calculate Fees
@@ -179,6 +187,7 @@ const SandBox = ({
       const penaltyFee = fee.times(balDiff).idiv(inst.cstFeeDenom);
       finalBalances[idx] = newBalances[idx].minus(penaltyFee);
     });
+
     D2 = getDMem(rates, finalBalances);
     const mintAmt = inst.poolSupply.times(D2.minus(D0)).idiv(D0);
     return mintAmt.toFixed();
@@ -250,7 +259,8 @@ const SandBox = ({
     removeLiquidityImbalance,
     calcTokenAmt,
     getVirtPx,
-    getCurrentRates,
+    getVirtD,
+    // getCurrentRates,
     // Setters,
     setBlkNum,
     setToken,

@@ -12,6 +12,11 @@ const CompoundToken = (deployedAddr, { web3, decCoin, decUnder }) => {
     exchangeRateStored: '0',
     accrualBlockNumber: '0',
     supplyRatePerBlock: '0',
+
+    exchRateCurrent: '0',
+    exchRateStored: '0',
+    accrBlkNum: '0',
+    supplyRatePerBlk: '0',
   };
   // Get correct units for cToken exchange rate
   const decRate = 18 + decUnder - decCoin;
@@ -34,6 +39,7 @@ const CompoundToken = (deployedAddr, { web3, decCoin, decUnder }) => {
       .exchangeRateCurrent()
       .call(toHex(blkNum));
     cache.exchangeRateCurrent = BN(rateConvertor.fromNative(rawN));
+    cache.exchRateCurrent = rawN;
     return rawN;
   };
 
@@ -44,6 +50,7 @@ const CompoundToken = (deployedAddr, { web3, decCoin, decUnder }) => {
       .call(toHex(blkNum));
     // cache.exchangeRateStored = rateConvertor.fromNative(rawN);
     cache.exchangeRateStored = BN(rateConvertor.fromNative(rawN));
+    cache.exchRateStored = rawN;
     // console.log(cache);
     return rawN;
   };
@@ -54,6 +61,7 @@ const CompoundToken = (deployedAddr, { web3, decCoin, decUnder }) => {
       .accrualBlockNumber()
       .call(toHex(blkNum));
     cache.accrualBlockNumber = rawN;
+    cache.accrBlockNum = rawN;
     return rawN;
   };
 
@@ -63,6 +71,7 @@ const CompoundToken = (deployedAddr, { web3, decCoin, decUnder }) => {
       .supplyRatePerBlock()
       .call(toHex(blkNum));
     cache.supplyRatePerBlock = rawN;
+    cache.supplyRatePerBlk = rawN;
     return rawN;
   };
 

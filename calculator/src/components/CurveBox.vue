@@ -52,7 +52,12 @@
         <b-field label="Fees (uint256)">
           <b-input v-model="cstFee"></b-input>
         </b-field>
-        <b-button type="is-success" expanded>Update</b-button>
+        <b-button type="is-success"
+          @click="updateParams"
+          expanded
+        >
+          Update
+        </b-button>
       </section> <!-- End of Form -->
     </div> <!-- End Of Curve Box -->
   </div>
@@ -60,6 +65,8 @@
 <script>
 // @ is an alias to /src
 import BN from 'bignumber.js';
+
+const clone = (x) => JSON.parse(JSON.stringify(x));
 
 export default {
   name: 'CurveBox',
@@ -77,6 +84,24 @@ export default {
   },
   computed: {
     curveCache() { return this.$store.getters['curveV4/cache']; },
+    sboxParams() { return this.$store.state.sandbox; },
+    sboxParamA() { return this.sboxParams.cstA; },
+    sboxParamFee() { return this.sboxParams.cstFee; },
+  },
+  mounted() {
+    this.$nextTick(this.loaded);
+  },
+  methods: {
+    loaded() {
+      this.cstA = clone(this.sboxParamA);
+      this.cstFee = clone(this.sboxParamFee);
+    },
+    updateParams() {
+      this.$store.dispatch('sandbox/updateParams', {
+        cstA: clone(this.cstA),
+        cstFee: clone(this.cstFee),
+      });
+    },
   },
 };
 </script>

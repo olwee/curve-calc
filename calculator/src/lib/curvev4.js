@@ -17,8 +17,12 @@ const Curve = (deployedAddr, poolAddr, { web3 }) => {
   };
 
   const cache = {
+    // UI Values
     balances: { cDAI: '0', cUSDC: '0' },
     totalSupply: '0',
+    // Contract Values
+    balancesRaw: { cDAI: '0', cUDC: '0' },
+    totalSupplyRaw: '0',
   };
 
   const totalSupply = async (blkNum) => {
@@ -27,18 +31,19 @@ const Curve = (deployedAddr, poolAddr, { web3 }) => {
       .totalSupply()
       .call(toHex(blkNum));
     cache.totalSupply = poolConvertor.fromNative(rawN);
+    cache.totalSupplyRaw = rawN;
     return rawN;
   };
 
   // cDAI, cUSDC is in 8 decimals
   const balanceOf = async (coin, blkNum) => {
     const coinIdx = coinMap[coin];
-    console.log(instCurve.methods);
     const rawN = await instCurve
       .methods
       .balances(coinIdx)
       .call(toHex(blkNum));
     cache.balances[coin] = BN(cTokenConvertor.fromNative(rawN)).toFixed();
+    cache.balancesRaw[coin] = rawN;
     return rawN;
   };
 
