@@ -1,0 +1,25 @@
+{
+  "name": "curve-calc",
+  "version": "0.0.1",
+  "description": "Calculator for Curve.fi",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/olwee/curve-calc.git"
+  },
+  "keywords": [
+    "curve",
+    "defi",
+    "javascript",
+    "ethereum"
+  ],
+  "author": "Oliver Wee",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/olwee/curve-calc/issues"
+  },
+  "homepage": "https://github.com/olwee/curve-calc#readme"
+}
