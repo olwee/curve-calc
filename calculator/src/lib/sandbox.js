@@ -6,6 +6,7 @@ const ONE = BN('1.0');
 const SandBox = ({
   A,
   coins,
+  cstUseLending,
   cstPrecision,
   cstPrecisionLending,
   cstPrecisionMul,
@@ -16,6 +17,7 @@ const SandBox = ({
     blkNum: '0',
     A,
     coins,
+    cstUseLending, // e.g [true, true, false]
     cstPrecision: BN(`${cstPrecision}`),
     cstPrecisionLending: BN(`${cstPrecisionLending}`),
     cstPrecisionMul: [],
@@ -106,16 +108,21 @@ const SandBox = ({
     const result = cstPrecisionMul.map((x) => BN(x));
     let i = 0;
     while (i < coins.length) {
-      let rate = tokens[coins[i]].exchRateStored;
-      const supplyRate = tokens[coins[i]].supplyRatePerBlk;
-      const blkNumOld = tokens[coins[i]].accrBlkNum;
-      const rateAdd = rate
-        .times(supplyRate)
-        .times(inst.blkNum.minus(blkNumOld))
-        .idiv(cstPrecisionLending);
-      // console.log(`raw: ${rateAdd.toFixed()} int: ${rateAdd.integerValue().toFixed()}`);
-      // rate = rate.plus(rateAdd);
-      rate = rate.plus(rateAdd);
+      const useLending = inst.cstUseLending[i];
+      // Default for No Lending
+      let rate = inst.cstPrecisionLending;
+      if (useLending === true) {
+        rate = tokens[coins[i]].exchRateStored;
+        const supplyRate = tokens[coins[i]].supplyRatePerBlk;
+        const blkNumOld = tokens[coins[i]].accrBlkNum;
+        const rateAdd = rate
+          .times(supplyRate)
+          .times(inst.blkNum.minus(blkNumOld))
+          .idiv(cstPrecisionLending);
+        // console.log(`raw: ${rateAdd.toFixed()} int: ${rateAdd.integerValue().toFixed()}`);
+        // rate = rate.plus(rateAdd);
+        rate = rate.plus(rateAdd);
+      }
       result[i] = result[i].times(rate);
       i += 1;
     }
@@ -126,7 +133,12 @@ const SandBox = ({
     const result = cstPrecisionMul.map((x) => BN(x));
     let i = 0;
     while (i < coins.length) {
-      const rate = tokens[coins[i]].exchRateCurrent;
+      const useLending = inst.cstUseLending[i];
+      // Default for No Lending
+      let rate = inst.cstPrecisionLending;
+      if (useLending === true) {
+        rate = tokens[coins[i]].exchRateCurrent;
+      }
       result[i] = result[i].times(rate);
       i += 1;
     }

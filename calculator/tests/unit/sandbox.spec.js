@@ -23,6 +23,7 @@ describe('lib/sandbox', () => {
   it('should deploy a sandbox with initial params', () => {
     const A = '900';
     const coins = ['cDAI', 'cUSDC'];
+    const cstUseLending = [true, true];
     const cstPrecision = '1e18';
     const cstPrecisionLending = '1e18';
     const cstPrecisionMul = ['1', '1000000000000'];
@@ -32,6 +33,7 @@ describe('lib/sandbox', () => {
     sandbox = Sandbox({
       A,
       coins,
+      cstUseLending,
       cstPrecision,
       cstPrecisionLending,
       cstPrecisionMul,
