@@ -201,7 +201,12 @@ const SandBox = ({
     });
 
     D2 = getDMem(rates, finalBalances);
+    const mintAmtOrig = inst.poolSupply.times(D1.minus(D0)).idiv(D0);
     const mintAmt = inst.poolSupply.times(D2.minus(D0)).idiv(D0);
+
+    const mintLoss = mintAmt.div(mintAmtOrig);
+    console.log(`mintLoss: ${mintLoss.toFixed()}`);
+
     return mintAmt.toFixed();
   };
 

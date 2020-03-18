@@ -87,6 +87,8 @@ const Calculator = (sandbox) => {
       const coinAmt = cvtr(cacheRates[wrapKey]).underToCoin(underAmt);
       return { ...acc, [wrapKey]: coinAmt };
     }, {});
+    console.log('coinAmts');
+    console.log(coinAmts);
     const curveTokens = sandbox.addLiquidity([coinAmts.cDAI, coinAmts.cUSDC, coinAmts.USDT]);
     return curveTokens;
   };
@@ -108,6 +110,7 @@ const Calculator = (sandbox) => {
     if (isNative === false) redeemEvenAmt = poolConvertor.toNative(poolAmt);
     //
     const retBalances = sandbox.removeLiquidity(redeemEvenAmt);
+
     const underAmts = retBalances.reduce((acc, coinAmt, idx) => {
       const coinName = sandbox.inst.coins[idx];
       const { [coinName]: { underlying: underName } } = coinInfo;
@@ -118,13 +121,14 @@ const Calculator = (sandbox) => {
       const underAmt = cvtr(cacheRates[coinName]).coinToUnder(coinAmt);
       return { ...acc, [underKey]: underAmt };
     }, {});
+
     const dollarValue = underList.reduce((acc, underName) => {
       const underValue = coinConvertors[underName].fromNative(underAmts[underName]);
       const dollarVal = BN(underValue).div(cacheDollarRates[underName]);
       return acc.plus(dollarVal);
     }, BN('0.0'));
 
-    return dollarValue.toFixed(3);
+    return dollarValue.toFixed(5);
   };
 
   const normDollar = (underName, dollarAmt) => {
@@ -133,11 +137,13 @@ const Calculator = (sandbox) => {
     const underAmt = dollars.div(cacheDollarRates[underName]);
     return underAmt.toFixed();
   };
-
+  // Normalized 100 PoolToken
   const normBasket = () => {
     const absCurveAmt = '100';
     const normAmt = BN('100');
+    // What is the Dollar Value of 100 Curve Tokens
     const absBasketValue = BN(getBasketValue(absCurveAmt));
+    console.log(`100 CURV = How many USD: ${absBasketValue.toFixed()}`);
     // Normalize against $100
     const normCurveAmt = normAmt.times(normAmt).div(absBasketValue);
     return normCurveAmt.toFixed(5);
@@ -149,9 +155,13 @@ const Calculator = (sandbox) => {
     if (isNative === false) poolAmt = BN(amt);
     console.log(`PoolAmt: ${poolAmt.toFixed(3)}`);
     const normPoolAmt = BN(normBasket()); // Non-Native
-    console.log(`Normalized Basket: ${normPoolAmt.toFixed(3)}`);
+    console.log(`Normalized Basket: ${normPoolAmt.toFixed(5)}`);
+    console.log('idealCTokens from normalized basket');
+    const retBal = sandbox.removeLiquidity(poolConvertor.toNative(normPoolAmt));
+    console.log(retBal);
+    //
     const bonus = (poolAmt.div(normPoolAmt)).minus(BN('1.00'));
-    return bonus.toFixed(3);
+    return bonus.toFixed(5);
   };
 
   return {
