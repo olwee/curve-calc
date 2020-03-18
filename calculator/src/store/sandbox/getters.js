@@ -21,6 +21,7 @@ const sandbox = (state, getters, rootState) => {
 
   const {
     cstA: A,
+    cstUseLending,
     cstCoins: coins,
     cstPrecision,
     cstPrecisionLending,
@@ -32,6 +33,7 @@ const sandbox = (state, getters, rootState) => {
   const sbox = Sandbox({
     A,
     coins,
+    cstUseLending,
     cstPrecision,
     cstPrecisionLending,
     cstPrecisionMul,

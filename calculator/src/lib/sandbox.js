@@ -278,6 +278,8 @@ const SandBox = ({
     setToken,
     setBalances,
     setPoolSupply,
+    // base,
+    inst,
   };
 };
 

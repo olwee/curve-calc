@@ -10,6 +10,7 @@ Vue.use(Vuex);
 const state = {
   // Constants
   cstA: '900',
+  cstUseLending: [true, true],
   cstCoins: ['cDAI', 'cUSDC'],
   cstPrecision: '1e18',
   cstPrecisionLending: '1e19',
