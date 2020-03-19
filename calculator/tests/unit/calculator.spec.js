@@ -1,4 +1,4 @@
-// import { assert } from 'chai';
+import { assert } from 'chai';
 // import BN from 'bignumber.js';
 import Calculator from '@/lib/calculator';
 
@@ -58,64 +58,44 @@ describe('lib/calculator', () => {
       // calc.setDollarRate('DAI', '1.00');
       // calc.setDollarRate('USDT', '1.00');
       const basketValue = calc.getBasketValue('100');
-      console.log(basketValue);
+      assert.equal(basketValue, '101.34376');
     });
     it('should get the dollar value of prior investment', () => {
-      const curveAbs = calc.investUnderlying({
-        DAI: '1',
-      });
-      const basketAbs = calc.getBasketValue(curveAbs, true);
-      console.log(`[ABS] 1 DAI: ${basketAbs}`);
       const basketValue = calc.getBasketValue('1.012631216611139894');
-      console.log(basketValue);
+      assert.equal(basketValue, '1.02624');
     });
     it('should get an estimate for DAI Investment [100]', () => {
-      const curveAbs = calc.investUnderlying({
-        DAI: '100',
+      const { dollars: basketAbs } = calc.investUnderlying({
+        DAI: { value: '100', norm: false },
       });
-      console.log(`curveABS: ${curveAbs}`);
-      const basketAbs = calc.getBasketValue(curveAbs, true);
-      console.log(`[ABS] 100 Token: ${basketAbs}`);
-      console.log('We want $100 worth of DAI');
-      const investNorm = calc.normDollar('DAI', '100');
-      console.log(`How much DAI for 100 USD: ${investNorm}`);
-      const basketIdeal = calc.getBasketValue('98.67406', false);
-      console.log(`basketIdeal $100: ${basketIdeal}`);
-      const curveNorm = calc.investUnderlying({
-        DAI: investNorm,
+      const { dollars: basketNorm, bonus } = calc.investUnderlying({
+        DAI: { value: '100', norm: true },
       });
-      console.log(`curveNorm / poolAmt : ${curveNorm}`);
-      const basketNorm = calc.getBasketValue(curveNorm, true);
-      const bonus = calc.getBonus(curveNorm);
-      console.log(`[NORM] 100 Token: ${basketNorm} Bonus: ${bonus}`);
+      assert.equal(basketAbs, '102.07064');
+      assert.equal(basketNorm, '99.65040');
+      assert.equal(bonus, '-0.00350');
     });
     it('should get an estimate for USDC Investment [100]', () => {
-      const curveAbs = calc.investUnderlying({
-        USDC: '100',
+      const { dollars: basketAbs } = calc.investUnderlying({
+        USDC: { value: '100', norm: false },
       });
-      const basketAbs = calc.getBasketValue(curveAbs, true);
-      console.log(`[ABS] 100 Token: ${basketAbs}`);
-      const investNorm = calc.normDollar('USDC', '100');
-      const curveNorm = calc.investUnderlying({
-        USDC: investNorm,
+      const { dollars: basketNorm, bonus } = calc.investUnderlying({
+        USDC: { value: '100', norm: true },
       });
-      const basketNorm = calc.getBasketValue(curveNorm, true);
-      const bonus = calc.getBonus(curveNorm);
-      console.log(`[NORM] 100 Token: ${basketNorm} Bonus: ${bonus}`);
+      assert.equal(basketAbs, '99.68674');
+      assert.equal(basketNorm, '99.68674');
+      assert.equal(bonus, '-0.00313');
     });
     it('should get an estimate for USDT Investment [100]', () => {
-      const curveAbs = calc.investUnderlying({
-        USDT: '100',
+      const { dollars: basketAbs } = calc.investUnderlying({
+        USDT: { value: '100', norm: false },
       });
-      const basketAbs = calc.getBasketValue(curveAbs, true);
-      console.log(`[ABS] 100 Token: ${basketAbs}`);
-      const investNorm = calc.normDollar('USDT', '100');
-      const curveNorm = calc.investUnderlying({
-        USDT: investNorm,
+      const { dollars: basketNorm, bonus } = calc.investUnderlying({
+        USDT: { value: '100', norm: true },
       });
-      const basketNorm = calc.getBasketValue(curveNorm, true);
-      const bonus = calc.getBonus(curveNorm);
-      console.log(`[NORM] 100 Token: ${basketNorm} Bonus: ${bonus}`);
+      assert.equal(basketAbs, '99.92932');
+      assert.equal(basketNorm, '99.66521');
+      assert.equal(bonus, '-0.00335');
     });
   });
   describe('# Curve USDT Real Invest Tx', () => {
@@ -144,17 +124,13 @@ describe('lib/calculator', () => {
     });
     it('should get the dollar value of prior investment', () => {
       calc.setDollarRate('DAI', '1.03'); // 1.0243 on Curve
-      // calc.setDollarRate('DAI', '1.0243'); // 1.0243 on Curve
-      // calc.setDollarRate('DAI', '1.00');
       calc.setDollarRate('USDC', '1.00'); // 1.00 on Curve
       calc.setDollarRate('USDT', '1.009803922'); // 1.00265 on Curve
-      // calc.setDollarRate('USDT', '1.00265'); // 1.00265 on Curve
-      const curveAbs = calc.investUnderlying({
-        DAI: '1',
+
+      const { dollars: basketAbs } = calc.investUnderlying({
+        DAI: { value: '1', norm: false },
       });
-      console.log(`Curve Tokens: ${curveAbs}`);
-      const basketAbs = calc.getBasketValue(curveAbs, true);
-      console.log(`[ABS] 1 DAI: ${basketAbs}`);
+      assert.equal(basketAbs, '1.01927');
       const basketAct = calc.getBasketValue('1.007706964', false);
       console.log(`[ACTUAL] 1 DAI: ${basketAct}`);
     });

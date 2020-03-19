@@ -74,36 +74,14 @@ const Calculator = (sandbox) => {
     const cvtr = underConvert(decUnder, decCoin);
     return { ...acc, [underCoin]: cvtr };
   }, {});
-  // { DAI, USDC, USDT }
-  const investUnderlying = (underlying) => {
-    // Convert underlying to cTokens or not
-    const coinAmts = underList.reduce((acc, underName) => {
-      let underAmt = '0';
-      const { wrapped: wrapCoin } = coinInfo[underName];
-      const wrapKey = wrapCoin !== false ? wrapCoin : underName;
-      if (typeof underlying[underName] === 'undefined') return { ...acc, [wrapKey]: underAmt };
-      underAmt = underlying[underName];
-      const cvtr = rateConvertors[underName];
-      const coinAmt = cvtr(cacheRates[wrapKey]).underToCoin(underAmt);
-      return { ...acc, [wrapKey]: coinAmt };
-    }, {});
-    console.log('coinAmts');
-    console.log(coinAmts);
-    const curveTokens = sandbox.addLiquidity([coinAmts.cDAI, coinAmts.cUSDC, coinAmts.USDT]);
-    return curveTokens;
+
+  const normDollar = (underName, dollarAmt) => {
+    const dollars = BN(dollarAmt);
+    const underAmt = dollars.div(cacheDollarRates[underName]);
+    return underAmt.toFixed();
   };
 
-  // Wrap Around Sandbox Methods
-  const setToken = (tokenName, tokenData) => {
-    //
-    const { exchRateCurrent } = tokenData;
-    cacheRates[tokenName] = exchRateCurrent;
-    sandbox.setToken(tokenName, tokenData);
-  };
-
-  const setDollarRate = (underName, rate) => {
-    cacheDollarRates[underName] = BN(String(rate));
-  };
+  // Normalized 100 PoolToken
 
   const getBasketValue = (poolAmt, isNative = false) => {
     let redeemEvenAmt = poolAmt;
@@ -131,37 +109,70 @@ const Calculator = (sandbox) => {
     return dollarValue.toFixed(5);
   };
 
-  const normDollar = (underName, dollarAmt) => {
-    //
-    const dollars = BN(dollarAmt);
-    const underAmt = dollars.div(cacheDollarRates[underName]);
-    return underAmt.toFixed();
-  };
-  // Normalized 100 PoolToken
-  const normBasket = () => {
+  const toDollar = (underName, underValue) => BN(underValue).div(cacheDollarRates[underName]);
+
+  const normBasket = (dollarAmt) => {
     const absCurveAmt = '100';
-    const normAmt = BN('100');
+    const normAmt = BN(dollarAmt);
     // What is the Dollar Value of 100 Curve Tokens
     const absBasketValue = BN(getBasketValue(absCurveAmt));
-    console.log(`100 CURV = How many USD: ${absBasketValue.toFixed()}`);
     // Normalize against $100
     const normCurveAmt = normAmt.times(normAmt).div(absBasketValue);
     return normCurveAmt.toFixed(5);
   };
   // getBonus takes 'amt' from normalized $100 Pool Tokens returned
   // and gets the bonus from an ideal $100 Investment
-  const getBonus = (amt, isNative = true) => {
-    let poolAmt = BN(poolConvertor.fromNative(amt));
-    if (isNative === false) poolAmt = BN(amt);
-    console.log(`PoolAmt: ${poolAmt.toFixed(3)}`);
-    const normPoolAmt = BN(normBasket()); // Non-Native
-    console.log(`Normalized Basket: ${normPoolAmt.toFixed(5)}`);
-    console.log('idealCTokens from normalized basket');
-    const retBal = sandbox.removeLiquidity(poolConvertor.toNative(normPoolAmt));
-    console.log(retBal);
-    //
+  const getBonus = (dollarAmt, poolAmtRaw, isNative = true) => {
+    let poolAmt = BN(poolConvertor.fromNative(poolAmtRaw));
+    if (isNative === false) poolAmt = BN(poolAmtRaw);
+    const normPoolAmt = BN(normBasket(dollarAmt)); // Non-Native
     const bonus = (poolAmt.div(normPoolAmt)).minus(BN('1.00'));
     return bonus.toFixed(5);
+  };
+
+  // Invest Underlying Coins
+  // { cDAI: { value: '100', norm: false | true } }
+  const investUnderlying = (underlying) => {
+    let dollarVal = BN('0.0');
+    // Convert underlying to cTokens or not
+    const coinAmts = underList.reduce((acc, underName) => {
+      let underAmt = '0';
+      const { wrapped: wrapCoin } = coinInfo[underName];
+      const wrapKey = wrapCoin !== false ? wrapCoin : underName;
+      if (typeof underlying[underName] === 'undefined') return { ...acc, [wrapKey]: underAmt };
+      const { value: underValue, norm } = underlying[underName];
+      // Convert and Add to Dollar Val
+      underAmt = normDollar(underName, underValue);
+      let dollarValAmt = BN(underValue);
+      if (norm === false) {
+        underAmt = underValue;
+        dollarValAmt = toDollar(underName, underValue);
+      }
+      // Add to Total Dollar Investment
+      dollarVal = dollarVal.plus(dollarValAmt);
+      const cvtr = rateConvertors[underName];
+      const coinAmt = cvtr(cacheRates[wrapKey]).underToCoin(underAmt);
+      return { ...acc, [wrapKey]: coinAmt };
+    }, {});
+    // Pool Tokens Returned
+    const poolTokens = sandbox.addLiquidity([coinAmts.cDAI, coinAmts.cUSDC, coinAmts.USDT]);
+    // Get Dollar Value
+    const basketVal = getBasketValue(poolTokens, true);
+    // Get Bonus
+    const bonus = getBonus(dollarVal, poolTokens);
+    return { pool: poolTokens, dollars: basketVal, bonus };
+  };
+
+  // Wrap Around Sandbox Methods
+  const setToken = (tokenName, tokenData) => {
+    //
+    const { exchRateCurrent } = tokenData;
+    cacheRates[tokenName] = exchRateCurrent;
+    sandbox.setToken(tokenName, tokenData);
+  };
+
+  const setDollarRate = (underName, rate) => {
+    cacheDollarRates[underName] = BN(String(rate));
   };
 
   return {
