@@ -109,7 +109,8 @@ const Calculator = (sandbox) => {
     return dollarValue.toFixed(5);
   };
 
-  const toDollar = (underName, underValue) => BN(underValue).div(cacheDollarRates[underName]);
+  const fromDollar = (underName, underValue) => BN(underValue).div(cacheDollarRates[underName]);
+  const toDollar = (underName, underValue) => BN(underValue).times(cacheDollarRates[underName]);
 
   const normBasket = (dollarAmt) => {
     const absCurveAmt = '100';
@@ -122,11 +123,20 @@ const Calculator = (sandbox) => {
   };
   // getBonus takes 'amt' from normalized $100 Pool Tokens returned
   // and gets the bonus from an ideal $100 Investment
-  const getBonus = (dollarAmt, poolAmtRaw, isNative = true) => {
+  const getInvestBonus = (dollarAmt, poolAmtRaw, isNative = true) => {
     let poolAmt = BN(poolConvertor.fromNative(poolAmtRaw));
     if (isNative === false) poolAmt = BN(poolAmtRaw);
     const normPoolAmt = BN(normBasket(dollarAmt)); // Non-Native
     const bonus = (poolAmt.div(normPoolAmt)).minus(BN('1.00'));
+    return bonus.toFixed(5);
+  };
+  // Redeem Bonus means, how much dollar value we got from burning POOL unevenly
+  // Over burning POOL evenly
+  const getRedeemBonus = (dollarAmt, poolAmtRaw, isNative = true) => {
+    let poolAmt = BN(poolConvertor.fromNative(poolAmtRaw));
+    if (isNative === false) poolAmt = BN(poolAmtRaw);
+    const normDollarAmt = BN(getBasketValue(poolAmt, false));
+    const bonus = (dollarAmt.div(normDollarAmt)).minus(BN('1.00'));
     return bonus.toFixed(5);
   };
 
@@ -146,8 +156,10 @@ const Calculator = (sandbox) => {
       let dollarValAmt = BN(underValue);
       if (norm === false) {
         underAmt = underValue;
-        dollarValAmt = toDollar(underName, underValue);
+        dollarValAmt = fromDollar(underName, underValue);
       }
+      console.log('underAmt');
+      console.log(underAmt);
       // Add to Total Dollar Investment
       dollarVal = dollarVal.plus(dollarValAmt);
       const cvtr = rateConvertors[underName];
@@ -159,8 +171,72 @@ const Calculator = (sandbox) => {
     // Get Dollar Value
     const basketVal = getBasketValue(poolTokens, true);
     // Get Bonus
-    const bonus = getBonus(dollarVal, poolTokens);
+    const bonus = getInvestBonus(dollarVal, poolTokens);
     return { pool: poolTokens, dollars: basketVal, bonus };
+  };
+
+  const increments = [4, 2, 1];
+  const incrOffsets = increments.map((it) => {
+    const thPct = 1000 + it;
+    const pct = BN(String(thPct)).div(BN('1000'));
+    return pct;
+  });
+
+  const clone = (x) => JSON.parse(JSON.stringify(x));
+
+  const redeemEstimator = (retBalances, coinIdx, maxBurnAmt) => {
+    const maxAmt = BN(maxBurnAmt);
+    let currentAmt = BN(retBalances[coinIdx]);
+    const redeemAmts = ['0', '0', '0'];
+    redeemAmts[coinIdx] = currentAmt;
+    let currentBurnAmt = sandbox.removeLiquidityImbalance(redeemAmts);
+    let tierPct = 0;
+
+    while (tierPct < increments.length) {
+      const pctOffset = incrOffsets[tierPct];
+      let loopAmt = BN(clone(currentAmt));
+      let loopBurnAmt = BN(clone(currentBurnAmt));
+
+      while (loopBurnAmt.lt(maxAmt)) {
+        const loopAmtNew = loopAmt.times(pctOffset).integerValue();
+        redeemAmts[coinIdx] = loopAmtNew;
+        const loopBurnAmtNew = BN(sandbox.removeLiquidityImbalance(redeemAmts));
+        const hitBurnLimit = loopBurnAmtNew.gte(maxAmt);
+        if (hitBurnLimit === true) break;
+        loopAmt = loopAmtNew;
+        loopBurnAmt = loopBurnAmtNew;
+      }
+      currentAmt = clone(loopAmt.toFixed());
+      currentBurnAmt = clone(loopBurnAmt.toFixed());
+      tierPct += 1;
+    }
+    const efficiency = BN(currentBurnAmt).div(maxAmt).toFixed(5);
+    return { wrapValue: currentAmt, poolBurnt: currentBurnAmt, eff: efficiency };
+  };
+
+  const redeemUnderlying = (underName, poolAmtRaw, isNative = true) => {
+    let poolAmt = poolAmtRaw;
+    if (isNative === false) poolAmt = poolConvertor.toNative(poolAmtRaw);
+    // Get the Base Amount of cTokens returned
+    const retBalances = sandbox.removeLiquidity(poolAmt);
+    const { wrapped: wrapCoin } = coinInfo[underName];
+    let wrapKey = wrapCoin;
+    if (wrapCoin === false) wrapKey = underName;
+    const coinIdx = sandbox.inst.coins.indexOf(wrapKey);
+    const { wrapValue, poolBurnt, eff } = redeemEstimator(retBalances, coinIdx, poolAmt);
+    const cvtr = rateConvertors[underName];
+    const coinAmt = cvtr(cacheRates[wrapKey]).coinToUnder(wrapValue);
+    const dollars = toDollar(underName, coinConvertors[underName].fromNative(coinAmt));
+    const bonus = getRedeemBonus(dollars, poolBurnt);
+
+    return {
+      burnt: poolBurnt,
+      burnEff: eff,
+      coins: wrapValue,
+      underlying: coinAmt,
+      dollars,
+      bonus,
+    };
   };
 
   // Wrap Around Sandbox Methods
@@ -178,11 +254,11 @@ const Calculator = (sandbox) => {
   return {
     sandbox,
     investUnderlying,
+    redeemUnderlying,
     getBasketValue,
     setDollarRate,
     normDollar,
     normBasket,
-    getBonus,
     // Wrap Around Sandbox
     setBlkNum: sandbox.setBlkNum,
     setBalances: sandbox.setBalances,

@@ -4,99 +4,184 @@ import Calculator from '@/lib/calculator';
 
 describe('lib/calculator', () => {
   describe('# Curve USDT', () => {
-    let calc = {};
-    it('should deploy the calculator', () => {
-      calc = Calculator.fromUSDT();
-      /*
-      calc.setBlkNum('9687706');
-      calc.setBalances([
-        '16594648995000', // cDAI
-        '274995384569632', // cUSDC
-        '46833053825', // USDT
-      ]);
-      calc.setToken('cDAI', {
-        exchRateCurrent: '203818388133583889370401002',
-        exchRateStored: '203818366823233430210082203',
-        accrBlkNum: '9687704',
-        supplyRatePerBlk: '52277797117',
+    describe('# Investment Calculations', () => {
+      let calc = {};
+      it('should deploy the calculator', () => {
+        calc = Calculator.fromUSDT();
+        /*
+        calc.setBlkNum('9687706');
+        calc.setBalances([
+          '16594648995000', // cDAI
+          '274995384569632', // cUSDC
+          '46833053825', // USDT
+        ]);
+        calc.setToken('cDAI', {
+          exchRateCurrent: '203818388133583889370401002',
+          exchRateStored: '203818366823233430210082203',
+          accrBlkNum: '9687704',
+          supplyRatePerBlk: '52277797117',
+        });
+        calc.setToken('cUSDC', {
+          exchRateCurrent: '210075136135729',
+          exchRateStored: '210075135294569',
+          accrBlkNum: '9687704',
+          supplyRatePerBlk: '2002055668',
+        });
+        calc.sandbox.setPoolSupply('106414428596068108721473');
+        */
+        calc.setBlkNum('9694529');
+        calc.setBalances([
+          '19437468120621', // cDAI
+          '369722540791198', // cUSDC
+          '26375769800', // USDT
+        ]);
+        calc.setToken('cDAI', {
+          exchRateCurrent: '203874427145564973743220876',
+          exchRateStored: '203874390115508032934463034',
+          accrBlkNum: '9694524',
+          supplyRatePerBlk: '36326344784',
+        });
+        calc.setToken('cUSDC', {
+          exchRateCurrent: '210077603146208',
+          exchRateStored: '210077601517781',
+          accrBlkNum: '9694524',
+          supplyRatePerBlk: '1550311337',
+        });
+        calc.sandbox.setPoolSupply('106415311225489458823714');
       });
-      calc.setToken('cUSDC', {
-        exchRateCurrent: '210075136135729',
-        exchRateStored: '210075135294569',
-        accrBlkNum: '9687704',
-        supplyRatePerBlk: '2002055668',
-      });
-      calc.sandbox.setPoolSupply('106414428596068108721473');
-      */
-      calc.setBlkNum('9694529');
-      calc.setBalances([
-        '19437468120621', // cDAI
-        '369722540791198', // cUSDC
-        '26375769800', // USDT
-      ]);
-      calc.setToken('cDAI', {
-        exchRateCurrent: '203874427145564973743220876',
-        exchRateStored: '203874390115508032934463034',
-        accrBlkNum: '9694524',
-        supplyRatePerBlk: '36326344784',
-      });
-      calc.setToken('cUSDC', {
-        exchRateCurrent: '210077603146208',
-        exchRateStored: '210077601517781',
-        accrBlkNum: '9694524',
-        supplyRatePerBlk: '1550311337',
-      });
-      calc.sandbox.setPoolSupply('106415311225489458823714');
-    });
-    it('should get the dollar value of a Curve Portfolio [100]', () => {
-      calc.setDollarRate('USDC', '1.00'); // 1.00 on Curve
-      // calc.setDollarRate('DAI', '1.03'); // 1.0243 on Curve
-      // calc.setDollarRate('USDT', '1.009803922'); // 1.00265 on Curve
+      it('should get the dollar value of a Curve Portfolio [100]', () => {
+        calc.setDollarRate('USDC', '1.00'); // 1.00 on Curve
+        // calc.setDollarRate('DAI', '1.03'); // 1.0243 on Curve
+        // calc.setDollarRate('USDT', '1.009803922'); // 1.00265 on Curve
 
-      calc.setDollarRate('DAI', '1.0243'); // 1.0243 on Curve
-      calc.setDollarRate('USDT', '1.00265'); // 1.00265 on Curve
-      // calc.setDollarRate('DAI', '1.00');
-      // calc.setDollarRate('USDT', '1.00');
-      const basketValue = calc.getBasketValue('100');
-      assert.equal(basketValue, '101.34376');
-    });
-    it('should get the dollar value of prior investment', () => {
-      const basketValue = calc.getBasketValue('1.012631216611139894');
-      assert.equal(basketValue, '1.02624');
-    });
-    it('should get an estimate for DAI Investment [100]', () => {
-      const { dollars: basketAbs } = calc.investUnderlying({
-        DAI: { value: '100', norm: false },
+        calc.setDollarRate('DAI', '1.0243'); // 1.0243 on Curve
+        calc.setDollarRate('USDT', '1.00265'); // 1.00265 on Curve
+        // calc.setDollarRate('DAI', '1.00');
+        // calc.setDollarRate('USDT', '1.00');
+        const basketValue = calc.getBasketValue('100');
+        assert.equal(basketValue, '101.34376');
       });
-      const { dollars: basketNorm, bonus } = calc.investUnderlying({
-        DAI: { value: '100', norm: true },
+      it('should get the dollar value of prior investment', () => {
+        const basketValue = calc.getBasketValue('1.012631216611139894');
+        assert.equal(basketValue, '1.02624');
       });
-      assert.equal(basketAbs, '102.07064');
-      assert.equal(basketNorm, '99.65040');
-      assert.equal(bonus, '-0.00350');
-    });
-    it('should get an estimate for USDC Investment [100]', () => {
-      const { dollars: basketAbs } = calc.investUnderlying({
-        USDC: { value: '100', norm: false },
+      it('should get an estimate for DAI Investment [100]', () => {
+        const { dollars: basketAbs } = calc.investUnderlying({
+          DAI: { value: '100', norm: false },
+        });
+        const { dollars: basketNorm, bonus } = calc.investUnderlying({
+          DAI: { value: '100', norm: true },
+        });
+        assert.equal(basketAbs, '102.07064');
+        assert.equal(basketNorm, '99.65040');
+        assert.equal(bonus, '-0.00350');
       });
-      const { dollars: basketNorm, bonus } = calc.investUnderlying({
-        USDC: { value: '100', norm: true },
+      it('should get an estimate for USDC Investment [100]', () => {
+        const { dollars: basketAbs } = calc.investUnderlying({
+          USDC: { value: '100', norm: false },
+        });
+        const { dollars: basketNorm, bonus, pool } = calc.investUnderlying({
+          USDC: { value: '100', norm: true },
+        });
+        console.log(pool);
+        assert.equal(basketAbs, '99.68674');
+        assert.equal(basketNorm, '99.68674');
+        assert.equal(bonus, '-0.00313');
       });
-      assert.equal(basketAbs, '99.68674');
-      assert.equal(basketNorm, '99.68674');
-      assert.equal(bonus, '-0.00313');
-    });
-    it('should get an estimate for USDT Investment [100]', () => {
-      const { dollars: basketAbs } = calc.investUnderlying({
-        USDT: { value: '100', norm: false },
+      it('should get an estimate for USDT Investment [100]', () => {
+        const { dollars: basketAbs } = calc.investUnderlying({
+          USDT: { value: '100', norm: false },
+        });
+        const { dollars: basketNorm, bonus, pool } = calc.investUnderlying({
+          USDT: { value: '100', norm: true },
+        });
+        console.log(pool);
+        assert.equal(basketAbs, '99.92932');
+        assert.equal(basketNorm, '99.66521');
+        assert.equal(bonus, '-0.00335');
       });
-      const { dollars: basketNorm, bonus } = calc.investUnderlying({
-        USDT: { value: '100', norm: true },
+    }); // End of Investment Describe
+    describe('# Redemption Calculations', () => {
+      let calc = {};
+      it('should deploy the calculator', () => {
+        calc = Calculator.fromUSDT();
+        calc.setBlkNum('9694529');
+        calc.setBalances([
+          '19437468120621', // cDAI
+          '369722540791198', // cUSDC
+          '26375769800', // USDT
+        ]);
+        calc.setToken('cDAI', {
+          exchRateCurrent: '203874427145564973743220876',
+          exchRateStored: '203874390115508032934463034',
+          accrBlkNum: '9694524',
+          supplyRatePerBlk: '36326344784',
+        });
+        calc.setToken('cUSDC', {
+          exchRateCurrent: '210077603146208',
+          exchRateStored: '210077601517781',
+          accrBlkNum: '9694524',
+          supplyRatePerBlk: '1550311337',
+        });
+        calc.sandbox.setPoolSupply('106415311225489458823714');
+        // Set Dollar Rates
+        calc.setDollarRate('USDC', '1.00'); // 1.00 on Curve
+        calc.setDollarRate('DAI', '1.0243'); // 1.0243 on Curve
+        calc.setDollarRate('USDT', '1.00265'); // 1.00265 on Curve
+        // End
       });
-      assert.equal(basketAbs, '99.92932');
-      assert.equal(basketNorm, '99.66521');
-      assert.equal(bonus, '-0.00335');
-    });
+      it('should get an estimate for DAI Redemption [100]', () => {
+        const {
+          burnt,
+          coins,
+          underlying,
+          dollars,
+          bonus,
+        } = calc.redeemUnderlying(
+          'DAI',
+          '98329094194400790270', // from Invest Nominal $100 DAI
+        );
+        console.log(`Burnt POOL : ${burnt}`);
+        console.log(`cTokens Required: ${coins}`);
+        console.log(`Tokens Acquired: ${underlying}`);
+        console.log(`Dollar Value: ${dollars}`);
+        console.log(`Bonus: ${bonus}`);
+      }); // End of DAI
+      it('should get an estimate for USDC Redemption [100]', () => {
+        const {
+          burnt,
+          coins,
+          underlying,
+          dollars,
+          bonus,
+        } = calc.redeemUnderlying(
+          'USDC',
+          '98364954016465134958', // from Invest Nominal $100 DAI
+        );
+        console.log(`Burnt POOL : ${burnt}`);
+        console.log(`cTokens Required: ${coins}`);
+        console.log(`Tokens Acquired: ${underlying}`);
+        console.log(`Dollar Value: ${dollars}`);
+        console.log(`Bonus: ${bonus}`);
+      }); // End of USDC
+      it('should get an estimate for USDT Redemption [100]', () => {
+        const {
+          burnt,
+          coins,
+          underlying,
+          dollars,
+          bonus,
+        } = calc.redeemUnderlying(
+          'USDT',
+          '98343712387714635303', // from Invest Nominal $100 DAI
+        );
+        console.log(`Burnt POOL : ${burnt}`);
+        console.log(`cTokens Required: ${coins}`);
+        console.log(`Tokens Acquired: ${underlying}`);
+        console.log(`Dollar Value: ${dollars}`);
+        console.log(`Bonus: ${bonus}`);
+      }); // End of USDT
+    }); // End of Redemption Calcuation
   });
   describe('# Curve USDT Real Invest Tx', () => {
     let calc = {};
