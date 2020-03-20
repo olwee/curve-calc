@@ -4,7 +4,7 @@
   "description": "Calculator for Curve.fi",
   "main": "index.js",
   "scripts": {
-    "test": "npm test"
+    "test": ""
   },
   "repository": {
     "type": "git",
