@@ -4,7 +4,7 @@
       Sandbox
     </h3>
     <h3 class="subtitle is-6">
-      D: {{ D || roundOff(5) }}
+      D: x
     </h3>
     <div class="tile">
       <div class="tile is-parent">
@@ -12,23 +12,6 @@
           <h3 class="title is-6">
             Deposit Calculator
           </h3>
-          <section class="has-text-left">
-            <b-field label="cDAI">
-              <b-input v-model="cDAI"></b-input>
-            </b-field>
-            <b-field label="cUSDC">
-              <b-input v-model="cUSDC"></b-input>
-            </b-field>
-          <h3 class="subtitle is-6 has-text-centered">
-            Results
-          </h3>
-          <h3 class="heading has-text-centered">
-            PoolToken
-          </h3>
-          <h3 class="title has-text-centered">
-            {{ depositRecv | fromNative(18) | roundOff(3) }}
-          </h3>
-          </section> <!-- End of Form -->
         </div> <!-- End of Deposit Calc -->
       </div> <!-- End of LHS Column -->
       <div class="tile is-parent">
@@ -36,40 +19,6 @@
           <h3 class="title is-6">
             Withdraw Symmetric Calculator
           </h3>
-          <section class="has-text-left">
-            <b-field label="PoolToken">
-              <b-input v-model="wSymmPool"></b-input>
-            </b-field>
-          <h3 class="subtitle is-6 has-text-centered">
-            Results
-          </h3>
-          <nav class="level">
-            <div class="level-left">
-              <div class="level-item has-text-centered">
-                <div>
-                  <h3 class="heading">
-                    cDAI
-                  </h3>
-                  <h3 class="title">
-                    {{ withdrawSymmRecv[0] | roundOff(3) }}
-                  </h3>
-                </div>
-              </div> <!-- End Of Level Item -->
-            </div>
-            <div class="level-right">
-              <div class="level-item has-text-centered">
-                <div>
-                  <h3 class="heading">
-                    cUSDC
-                  </h3>
-                  <h3 class="title">
-                    {{ withdrawSymmRecv[1] | roundOff(3) }}
-                  </h3>
-                </div>
-              </div> <!-- End Of Level Item -->
-            </div>
-          </nav> <!-- End Of cDAI Level -->
-          </section> <!-- End of Form -->
         </div> <!-- End of Withdraw Symm Calc -->
       </div>
     </div>
@@ -97,6 +46,7 @@ export default {
     fromNative: (x, y) => BN(x).div(BN(`1e${y}`)).toFixed(),
   },
   computed: {
+    /*
     sbox() { return this.$store.getters['sandbox/sandbox']; },
     D() {
       if (this.sbox === 'NOT_SET') return -1;
@@ -114,6 +64,7 @@ export default {
       const result = this.sbox.removeLiquidity(nativePOOL);
       return result.map((r) => BN(r).div(BN('1e8')).toFixed());
     },
+    */
   },
   mounted() {
     this.$nextTick(this.loaded);

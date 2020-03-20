@@ -18,31 +18,26 @@
     <div class="padded-top">&nbsp;</div>
     <div class="tile is-ancestor">
       <div class="tile is-3">
-        <curve-box />
       </div> <!-- End of Curve Box Section -->
-      <div class="tile is-6">
-        <sandbox />
+      <div class="tile is-9">
       </div> <!-- End of Meat Section -->
-      <div class="tile is-3 is-vertical is-parent">
-        <compound-box />
-      </div> <!-- End of Compound Box Section -->
     </div>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import CompoundBox from '@/components/CompoundBox.vue';
-import CurveBox from '@/components/CurveBox.vue';
-import Sandbox from '@/components/Sandbox.vue';
+// import CompoundBox from '@/components/CompoundBox.vue';
+// import CurveBox from '@/components/CurveBox.vue';
+// import Sandbox from '@/components/Sandbox.vue';
 
 export default {
   name: 'Home',
   components: {
     // HelloWorld,
-    'compound-box': CompoundBox,
-    'curve-box': CurveBox,
-    sandbox: Sandbox,
+    // 'compound-box': CompoundBox,
+    // 'curve-box': CurveBox,
+    // sandbox: Sandbox,
   },
   filters: {
     sumaddr(x) { return `${x.substr(0, 6)}...${x.substr(x.length - 6, x.length)}`; },
@@ -53,6 +48,7 @@ export default {
     web3() { return this.$store.getters['wallet/web3']; },
     cDAI() { return this.$store.getters['compound/cDAI']; },
     cUSDC() { return this.$store.getters['compound/cUSDC']; },
+    USDT() { return this.$store.getters['compound/USDT']; },
   },
 };
 </script>

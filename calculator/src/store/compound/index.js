@@ -11,18 +11,22 @@ const state = {
   tokens: {
     cDAI: 'NOT_SET',
     cUSDC: 'NOT_SET',
+    USDT: 'NOT_SET',
   },
   tokenAddrs: {
     cDAI: '0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643',
     cUSDC: '0x39AA39c021dfbaE8faC545936693aC917d5E7563',
+    USDT: '0xdac17f958d2ee523a2206206994597c13d831ec7',
   },
   tokenSettings: {
     cDAI: { decCoin: 8, decUnder: 18 },
     cUSDC: { decCoin: 8, decUnder: 6 },
+    USDT: { decCoin: 6, decUnder: 6 },
   },
   tokenCache: {
     cDAI: 'NOT_SET',
     cUSDC: 'NOT_SET',
+    USDT: 'NOT_SET',
   },
 };
 

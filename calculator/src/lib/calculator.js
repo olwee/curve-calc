@@ -108,8 +108,9 @@ const Calculator = (sandbox) => {
 
     return dollarValue.toFixed(5);
   };
-
+  // Under Amt in Dollars
   const fromDollar = (underName, underValue) => BN(underValue).div(cacheDollarRates[underName]);
+  // Under Amt to Dollars
   const toDollar = (underName, underValue) => BN(underValue).times(cacheDollarRates[underName]);
 
   const normBasket = (dollarAmt) => {

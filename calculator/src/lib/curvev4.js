@@ -10,18 +10,20 @@ const Curve = (deployedAddr, poolAddr, { web3 }) => {
 
   const poolConvertor = Convertor(18);
   const cTokenConvertor = Convertor(8);
+  const tetherConvertor = Convertor(8);
 
   const coinMap = {
     cDAI: 0,
     cUSDC: 1,
+    USDT: 2,
   };
 
   const cache = {
     // UI Values
-    balances: { cDAI: '0', cUSDC: '0' },
+    balances: { cDAI: '0', cUSDC: '0', USDT: '0' },
     totalSupply: '0',
     // Contract Values
-    balancesRaw: { cDAI: '0', cUDC: '0' },
+    balancesRaw: { cDAI: '0', cUSDC: '0', USDT: '0' },
     totalSupplyRaw: '0',
   };
 
@@ -43,6 +45,7 @@ const Curve = (deployedAddr, poolAddr, { web3 }) => {
       .balances(coinIdx)
       .call(toHex(blkNum));
     cache.balances[coin] = BN(cTokenConvertor.fromNative(rawN)).toFixed();
+    if (coin === 'USDT') cache.balances[coin] = BN(tetherConvertor.fromNative(rawN)).toFixed();
     cache.balancesRaw[coin] = rawN;
     return rawN;
   };

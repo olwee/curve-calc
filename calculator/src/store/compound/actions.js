@@ -23,15 +23,17 @@ const hookNewBlock = async ({ state, commit }) => {
   const updater = async (t) => {
     const { tokens: { [t]: tokenStored } } = state;
     const token = tokenStored.clone();
-    const tasks = [
-      token.exchangeRateCurrent(),
-      token.exchangeRateStored(),
-      token.accrualBlockNumber(),
-      token.supplyRatePerBlock(),
-    ];
-    await Promise.all(tasks);
-    commit(types.SET_TOKEN, { name: t, token });
-    commit(types.SET_TOKEN_CACHE, { name: t, tokenCache: token.cache });
+    if (t !== 'USDT') {
+      const tasks = [
+        token.exchangeRateCurrent(),
+        token.exchangeRateStored(),
+        token.accrualBlockNumber(),
+        token.supplyRatePerBlock(),
+      ];
+      await Promise.all(tasks);
+      commit(types.SET_TOKEN, { name: t, token });
+      commit(types.SET_TOKEN_CACHE, { name: t, tokenCache: token.cache });
+    }
   };
   const tokenTasks = tokenList.map(updater);
   await Promise.all(tokenTasks);
