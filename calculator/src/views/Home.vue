@@ -20,6 +20,7 @@
       <div class="tile is-3">
       </div> <!-- End of Curve Box Section -->
       <div class="tile is-9">
+        <trade-curve-usdt-box />
       </div> <!-- End of Meat Section -->
     </div>
   </div>
@@ -30,6 +31,7 @@
 // import CompoundBox from '@/components/CompoundBox.vue';
 // import CurveBox from '@/components/CurveBox.vue';
 // import Sandbox from '@/components/Sandbox.vue';
+import TradeCurveUSDT from '@/components/tradeCurveUSDT.vue';
 
 export default {
   name: 'Home',
@@ -38,6 +40,7 @@ export default {
     // 'compound-box': CompoundBox,
     // 'curve-box': CurveBox,
     // sandbox: Sandbox,
+    'trade-curve-usdt-box': TradeCurveUSDT,
   },
   filters: {
     sumaddr(x) { return `${x.substr(0, 6)}...${x.substr(x.length - 6, x.length)}`; },

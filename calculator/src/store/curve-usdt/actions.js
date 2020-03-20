@@ -2,7 +2,7 @@ import CurveV4 from '@/lib/curvev4';
 import * as types from './mutation-types';
 
 const hookInit = async ({ commit, dispatch, state }, web3) => {
-  //
+  console.log('curveUSDT hookInit called');
   const { addrs: { curveV4, curveV4Pool } } = state;
   const curve = CurveV4(curveV4, curveV4Pool, { web3 });
   commit(types.SET_CURVE_INST, curve);
@@ -11,7 +11,7 @@ const hookInit = async ({ commit, dispatch, state }, web3) => {
 };
 
 const hookNewBlock = async ({ state, commit }) => {
-  //
+  console.log('curveUSDT hookNewBlock called');
   const { curveInst } = state;
   const curve = curveInst.clone();
   const tasks = [

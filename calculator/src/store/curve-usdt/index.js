@@ -9,11 +9,12 @@ Vue.use(Vuex);
 
 const state = {
   addrs: {
-    curveV4: '0xa2b47e3d5c44877cca798226b7b8118f9bfb7a56',
-    curveV4Pool: '0x845838df265dcd2c412a1dc9e959c7d08537f8a2',
+    curveV4: '0x52EA46506B9CC5Ef470C5bf89f17Dc28bB35D85C',
+    curveV4Pool: '0x9fc689ccada600b6df723d9e47d84d76664a1f23',
   },
   curveInst: {},
   curveCache: 'NOT_SET',
+  calculator: {},
 };
 
 const mutations = {

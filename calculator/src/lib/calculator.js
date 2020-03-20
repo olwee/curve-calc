@@ -119,7 +119,7 @@ const Calculator = (sandbox) => {
     // What is the Dollar Value of 100 Curve Tokens
     const absBasketValue = BN(getBasketValue(absCurveAmt));
     // Normalize against $100
-    const normCurveAmt = normAmt.times(normAmt).div(absBasketValue);
+    const normCurveAmt = normAmt.times(BN(absCurveAmt)).div(absBasketValue);
     return normCurveAmt.toFixed(5);
   };
   // getBonus takes 'amt' from normalized $100 Pool Tokens returned
@@ -145,6 +145,7 @@ const Calculator = (sandbox) => {
   // { cDAI: { value: '100', norm: false | true } }
   const investUnderlying = (underlying) => {
     let dollarVal = BN('0.0');
+    let underVal = BN('0.0');
     // Convert underlying to cTokens or not
     const coinAmts = underList.reduce((acc, underName) => {
       let underAmt = '0';
@@ -159,10 +160,10 @@ const Calculator = (sandbox) => {
         underAmt = underValue;
         dollarValAmt = fromDollar(underName, underValue);
       }
-      console.log('underAmt');
-      console.log(underAmt);
       // Add to Total Dollar Investment
       dollarVal = dollarVal.plus(dollarValAmt);
+      underVal = underVal.plus(underAmt);
+
       const cvtr = rateConvertors[underName];
       const coinAmt = cvtr(cacheRates[wrapKey]).underToCoin(underAmt);
       return { ...acc, [wrapKey]: coinAmt };
@@ -173,7 +174,12 @@ const Calculator = (sandbox) => {
     const basketVal = getBasketValue(poolTokens, true);
     // Get Bonus
     const bonus = getInvestBonus(dollarVal, poolTokens);
-    return { pool: poolTokens, dollars: basketVal, bonus };
+    return {
+      pool: poolTokens,
+      dollars: basketVal,
+      bonus,
+      underlying: underVal.toFixed(),
+    };
   };
 
   const increments = [4, 2, 1];
