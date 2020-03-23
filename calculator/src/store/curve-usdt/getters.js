@@ -16,6 +16,11 @@ const calculator = (state, getters, rootState) => {
         cUSDC: cacheCUSDC,
       },
     },
+    sandbox: {
+      dollarDAI,
+      dollarUSDC,
+      dollarUSDT,
+    },
   } = rootState;
   const isCurveSet = curveCache === 'NOT_SET';
   const isCompoundDAISet = cacheCDAI === 'NOT_SET';
@@ -47,9 +52,9 @@ const calculator = (state, getters, rootState) => {
 
   calc.setPoolSupply(poolSupply);
   //
-  calc.setDollarRate('USDC', '1.00'); // 1.00 on Curve
-  calc.setDollarRate('DAI', '1.00'); // 1.0243 on Curve
-  calc.setDollarRate('USDT', '1.00'); // 1.00265 on Curve
+  calc.setDollarRate('DAI', dollarDAI);
+  calc.setDollarRate('USDC', dollarUSDC);
+  calc.setDollarRate('USDT', dollarUSDT);
 
   return calc;
 };

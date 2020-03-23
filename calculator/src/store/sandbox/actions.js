@@ -1,7 +1,17 @@
 import * as types from './mutation-types';
 
-const updateParams = async ({ commit }, { cstA, cstFee }) => {
-  commit(types.SET_PARAMS, { cstA, cstFee });
+const updateParams = async ({ commit }, {
+  dollarAmt,
+  dollarDAI,
+  dollarUSDC,
+  dollarUSDT,
+}) => {
+  commit(types.SET_PARAMS, {
+    dollarAmt,
+    dollarDAI,
+    dollarUSDC,
+    dollarUSDT,
+  });
 };
 
 export {

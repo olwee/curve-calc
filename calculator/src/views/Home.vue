@@ -17,10 +17,12 @@
     </b-navbar>
     <div class="padded-top">&nbsp;</div>
     <div class="tile is-ancestor">
-      <div class="tile is-3">
+      <div class="tile is-2">
+        <sandbox />
       </div> <!-- End of Curve Box Section -->
-      <div class="tile is-9">
+      <div class="tile is-10">
         <trade-curve-usdt-box />
+        <trade-curve-compound-box />
       </div> <!-- End of Meat Section -->
     </div>
   </div>
@@ -30,8 +32,9 @@
 // @ is an alias to /src
 // import CompoundBox from '@/components/CompoundBox.vue';
 // import CurveBox from '@/components/CurveBox.vue';
-// import Sandbox from '@/components/Sandbox.vue';
+import Sandbox from '@/components/Sandbox.vue';
 import TradeCurveUSDT from '@/components/tradeCurveUSDT.vue';
+import TradeCurveCompound from '@/components/tradeCurveCompound.vue';
 
 export default {
   name: 'Home',
@@ -39,8 +42,9 @@ export default {
     // HelloWorld,
     // 'compound-box': CompoundBox,
     // 'curve-box': CurveBox,
-    // sandbox: Sandbox,
+    sandbox: Sandbox,
     'trade-curve-usdt-box': TradeCurveUSDT,
+    'trade-curve-compound-box': TradeCurveCompound,
   },
   filters: {
     sumaddr(x) { return `${x.substr(0, 6)}...${x.substr(x.length - 6, x.length)}`; },

@@ -275,7 +275,27 @@ const Calculator = (sandbox) => {
 };
 
 Calculator.fromCompound = () => {
+  const A = '900';
+  const coins = ['cDAI', 'cUSDC'];
+  const cstUseLending = [true, true];
+  const cstPrecision = '1e18';
+  const cstPrecisionLending = '1e18';
+  const cstPrecisionMul = ['1', '1000000000000'];
+  const cstFee = '4e6';
+  const cstFeeDenom = '1e10';
 
+  const sandbox = Sandbox({
+    A,
+    coins,
+    cstUseLending,
+    cstPrecision,
+    cstPrecisionLending,
+    cstPrecisionMul,
+    cstFee,
+    cstFeeDenom,
+  });
+
+  return Calculator(sandbox);
 };
 
 Calculator.fromUSDT = () => {

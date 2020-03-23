@@ -1,27 +1,31 @@
 <template>
   <div class="box-sandbox has-text-left">
     <h3 class="title is-4">
-      Sandbox
+      Trade Ticket
     </h3>
-    <h3 class="subtitle is-6">
-      D: x
-    </h3>
-    <div class="tile">
-      <div class="tile is-parent">
-        <div class="tile is-child box">
-          <h3 class="title is-6">
-            Deposit Calculator
-          </h3>
-        </div> <!-- End of Deposit Calc -->
-      </div> <!-- End of LHS Column -->
-      <div class="tile is-parent">
-        <div class="tile is-child box">
-          <h3 class="title is-6">
-            Withdraw Symmetric Calculator
-          </h3>
-        </div> <!-- End of Withdraw Symm Calc -->
-      </div>
-    </div>
+    <section>
+      <b-field
+        label="Nominal Amount"
+      >
+        <b-input v-model="newNominalAmt" />
+      </b-field> <!-- End Of NominalAmt Field -->
+      <b-field
+        label="DAI-DOLLAR"
+      >
+        <b-input v-model="newDollarDAI" />
+      </b-field> <!-- End Of DollarDAI Field -->
+      <b-field
+        label="USDC-DOLLAR"
+      >
+        <b-input v-model="newDollarUSDC" />
+      </b-field> <!-- End Of DollarDAI Field -->
+      <b-field
+        label="USDT-DOLLAR"
+      >
+        <b-input v-model="newDollarUSDT" />
+      </b-field> <!-- End Of DollarDAI Field -->
+      <b-button @click="updatePortfolio">Update</b-button>
+    </section>  <!-- End of Trade Ticket -->
   </div>
 </template>
 <script>
@@ -34,9 +38,10 @@ export default {
   name: 'Sandbox',
   data() {
     return {
-      cDAI: '0',
-      cUSDC: '0',
-      wSymmPool: '0',
+      newNominalAmt: '1000.00',
+      newDollarDAI: '1.000',
+      newDollarUSDC: '1.000',
+      newDollarUSDT: '1.000',
     };
   },
   components: {
@@ -46,31 +51,20 @@ export default {
     fromNative: (x, y) => BN(x).div(BN(`1e${y}`)).toFixed(),
   },
   computed: {
-    /*
-    sbox() { return this.$store.getters['sandbox/sandbox']; },
-    D() {
-      if (this.sbox === 'NOT_SET') return -1;
-      return this.sbox.getVirtD();
-    },
-    depositRecv() {
-      if (this.sbox === 'NOT_SET') return 0;
-      const nativeCDAI = BN(this.cDAI).times(BN('1e8')).toFixed();
-      const nativeCUSDC = BN(this.cUSDC).times(BN('1e8')).toFixed();
-      return this.sbox.addLiquidity([nativeCDAI, nativeCUSDC]);
-    },
-    withdrawSymmRecv() {
-      if (this.sbox === 'NOT_SET') return ['0', '0'];
-      const nativePOOL = BN(this.wSymmPool).times(BN('1e18')).toFixed();
-      const result = this.sbox.removeLiquidity(nativePOOL);
-      return result.map((r) => BN(r).div(BN('1e8')).toFixed());
-    },
-    */
   },
   mounted() {
     this.$nextTick(this.loaded);
   },
   methods: {
     loaded() {
+    },
+    updatePortfolio() {
+      this.$store.dispatch('sandbox/updateParams', {
+        dollarAmt: this.newNominalAmt,
+        dollarDAI: this.newDollarDAI,
+        dollarUSDC: this.newDollarUSDC,
+        dollarUSDT: this.newDollarUSDT,
+      });
     },
   },
 };

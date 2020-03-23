@@ -1,7 +1,7 @@
 <template>
   <div class="has-text-left">
     <h3 class="title is-4">
-      Curve USDT Products
+      Curve Compound Products
     </h3>
     <h3 class="subtitle is-6">
       <b-table :data="quotes" :columns="tradeTable.columns" />
@@ -62,11 +62,11 @@ export default {
     fromNative: (x, y) => BN(x).div(BN(`1e${y}`)).toFixed(),
   },
   computed: {
-    calculator() { return this.$store.getters['curveUSDT/calculator']; },
+    calculator() { return this.$store.getters['curveCompound/calculator']; },
     quotes() {
       const nominalAmt = this.dollarAmt;
       if (this.calculator === 'NOT_SET') return [];
-      const pairs = ['DAI', 'USDC', 'USDT'];
+      const pairs = ['DAI', 'USDC'];
       const underQuotes = pairs.map((underName) => {
         //
         // const symbol = `${underName}-POOL`;

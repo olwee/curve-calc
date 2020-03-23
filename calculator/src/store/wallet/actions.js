@@ -23,6 +23,7 @@ const setWeb3Provider = async ({ commit, state, dispatch }, cfg) => {
     // Load Compound Tokens
     dispatch('compound/hookInit', web3js, { root: true });
     dispatch('curveUSDT/hookInit', web3js, { root: true });
+    dispatch('curveCompound/hookInit', web3js, { root: true });
     // Load Curve
     // dispatch('curveV4/hookInit', web3js, { root: true });
     // Subscribe to New Block Headers
@@ -31,8 +32,9 @@ const setWeb3Provider = async ({ commit, state, dispatch }, cfg) => {
         const { number: newBlockHeight } = blockRes;
         commit(types.SET_BLOCK_HEIGHT, newBlockHeight);
         // Fire Hooks
-        dispatch('compound/hookNewBlock', web3js, { root: true });
-        dispatch('curveUSDT/hookNewBlock', web3js, { root: true });
+        // dispatch('compound/hookNewBlock', web3js, { root: true });
+        // dispatch('curveUSDT/hookNewBlock', web3js, { root: true });
+        // dispatch('curveCompound/hookNewBlock', web3js, { root: true });
       }
     });
   } else {

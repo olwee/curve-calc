@@ -9,21 +9,24 @@ Vue.use(Vuex);
 
 const state = {
   // Constants
-  cstA: '900',
-  cstUseLending: [true, true],
-  cstCoins: ['cDAI', 'cUSDC'],
-  cstPrecision: '1e18',
-  cstPrecisionLending: '1e19',
-  cstPrecisionMul: ['1', '1000000000000'],
-  cstFee: '4e6',
-  cstFeeDenom: '1e10',
+  dollarAmt: '1000',
+  dollarDAI: '1.00',
+  dollarUSDC: '1.00',
+  dollarUSDT: '1.00',
 };
 
 const mutations = {
   /*  eslint-disable-next-line */
-  [types.SET_PARAMS](state, { cstFee, cstA }) {
-    state.cstFee = cstFee;
-    state.cstA = cstA;
+  [types.SET_PARAMS](state, {
+    dollarAmt,
+    dollarDAI,
+    dollarUSDC,
+    dollarUSDT,
+  }) {
+    state.dollarAmt = dollarAmt;
+    state.dollarDAI = dollarDAI;
+    state.dollarUSDC = dollarUSDC;
+    state.dollarUSDT = dollarUSDT;
   },
 };
 
