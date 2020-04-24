@@ -275,7 +275,7 @@ const Calculator = (sandbox) => {
 };
 
 Calculator.fromCompound = () => {
-  const A = '900';
+  const A = '450';
   const coins = ['cDAI', 'cUSDC'];
   const cstUseLending = [true, true];
   const cstPrecision = '1e18';
