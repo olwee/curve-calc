@@ -70,24 +70,27 @@ export default {
       const underQuotes = pairs.map((underName) => {
         //
         // const symbol = `${underName}-POOL`;
-        const symbol = `POOL-${underName}`;
+        const symbol = `${underName}-POOL`;
         const {
           /* eslint-disable-next-line no-unused-vars */
           pool,
         } = this.calculator.investUnderlying({
           [underName]: { value: nominalAmt, norm: true },
         });
-        console.log(`Invested ${nominalAmt} to get ${pool} tokens for ${underName}`);
         const poolToken = BN(poolConvertor.fromNative(pool));
-        const pxAsk = poolToken.div(BN(nominalAmt));
         /* eslint-disable-next-line no-unused-vars */
         const { underlying } = this.calculator.redeemUnderlying(
           underName,
           pool,
         );
-        console.log(`Redeemed ${pool} tokens to get ${underlying} for ${underName}`);
-        const pxBidRaw = BN(underConvertor[underName].fromNative(underlying));
-        const pxBid = pxBidRaw.div(BN(nominalAmt));
+        const underAmt = BN(underConvertor[underName].fromNative(underlying));
+        // const pxBid = pxBidRaw.div(BN(poolToken));
+        // Calculate DAI - POOL
+        const pxAsk = BN(nominalAmt).div(poolToken);
+        const pxBid = BN(underAmt).div(poolToken);
+        // Calculate POOL - DAI
+        // const pxBidd = BN(1).div(pxAsk);
+        // const pxAskk = BN(1).div(pxBid);
 
         const pxSpread = (pxAsk.minus(pxBid)).div(pxAsk);
 
@@ -105,7 +108,7 @@ export default {
       const poolBid = BN(nominalAmt).div(BN(poolDollars));
 
       underQuotes.push({
-        symbol: 'POOL-DOLLAR',
+        symbol: 'DOLLAR-POOL',
         pool: poolNorm,
         pxAsk: poolBid.toFixed(6),
         pxBid: poolBid.toFixed(6),

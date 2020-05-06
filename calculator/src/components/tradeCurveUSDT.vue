@@ -70,7 +70,7 @@ export default {
       const underQuotes = pairs.map((underName) => {
         //
         // const symbol = `${underName}-POOL`;
-        const symbol = `POOL-${underName}`;
+        const symbol = `${underName}-POOL`;
         const {
           /* eslint-disable-next-line no-unused-vars */
           pool,
@@ -78,14 +78,15 @@ export default {
           [underName]: { value: nominalAmt, norm: true },
         });
         const poolToken = BN(poolConvertor.fromNative(pool));
-        const pxAsk = poolToken.div(BN(nominalAmt));
         /* eslint-disable-next-line no-unused-vars */
         const { underlying } = this.calculator.redeemUnderlying(
           underName,
           pool,
         );
-        const pxBidRaw = BN(underConvertor[underName].fromNative(underlying));
-        const pxBid = pxBidRaw.div(BN(nominalAmt));
+        const underAmt = BN(underConvertor[underName].fromNative(underlying));
+        // Calculate DAI - POOL
+        const pxAsk = BN(nominalAmt).div(poolToken);
+        const pxBid = BN(underAmt).div(poolToken);
         /*
         const pxAsk = tokenAsk.div(poolToken);
         const pxBid = tokenBid.div(poolToken);
@@ -109,7 +110,7 @@ export default {
       const poolBid = BN(nominalAmt).div(BN(poolDollars));
 
       underQuotes.push({
-        symbol: 'POOL-DOLLAR',
+        symbol: 'DOLLAR-POOL',
         pool: poolNorm,
         pxAsk: poolBid.toFixed(6),
         pxBid: poolBid.toFixed(6),
