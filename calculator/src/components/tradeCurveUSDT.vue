@@ -73,29 +73,25 @@ export default {
         const symbol = `POOL-${underName}`;
         const {
           /* eslint-disable-next-line no-unused-vars */
-          dollars: dollarsAsk,
           pool,
-          underlying: tokenAskRaw,
         } = this.calculator.investUnderlying({
           [underName]: { value: nominalAmt, norm: true },
         });
+        const poolToken = BN(poolConvertor.fromNative(pool));
+        const pxAsk = poolToken.div(BN(nominalAmt));
         /* eslint-disable-next-line no-unused-vars */
-        const { dollars: dollarsBid, underlying: tokenBidRaw } = this.calculator.redeemUnderlying(
+        const { underlying } = this.calculator.redeemUnderlying(
           underName,
           pool,
         );
-        const poolToken = BN(poolConvertor.fromNative(pool));
-        const tokenAsk = BN(tokenAskRaw);
-        const tokenBid = BN(underConvertor[underName].fromNative(tokenBidRaw));
-
+        const pxBidRaw = BN(underConvertor[underName].fromNative(underlying));
+        const pxBid = pxBidRaw.div(BN(nominalAmt));
         /*
         const pxAsk = tokenAsk.div(poolToken);
         const pxBid = tokenBid.div(poolToken);
 
         const pxSpread = (pxAsk.minus(pxBid)).div(pxAsk);
         */
-        const pxBid = poolToken.div(tokenAsk);
-        const pxAsk = poolToken.div(tokenBid);
 
         const pxSpread = (pxAsk.minus(pxBid)).div(pxAsk);
 

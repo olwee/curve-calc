@@ -73,29 +73,21 @@ export default {
         const symbol = `POOL-${underName}`;
         const {
           /* eslint-disable-next-line no-unused-vars */
-          dollars: dollarsAsk,
           pool,
-          underlying: tokenAskRaw,
         } = this.calculator.investUnderlying({
           [underName]: { value: nominalAmt, norm: true },
         });
+        console.log(`Invested ${nominalAmt} to get ${pool} tokens for ${underName}`);
+        const poolToken = BN(poolConvertor.fromNative(pool));
+        const pxAsk = poolToken.div(BN(nominalAmt));
         /* eslint-disable-next-line no-unused-vars */
-        const { dollars: dollarsBid, underlying: tokenBidRaw } = this.calculator.redeemUnderlying(
+        const { underlying } = this.calculator.redeemUnderlying(
           underName,
           pool,
         );
-        const poolToken = BN(poolConvertor.fromNative(pool));
-        const tokenAsk = BN(tokenAskRaw);
-        const tokenBid = BN(underConvertor[underName].fromNative(tokenBidRaw));
-
-        /*
-        const pxAsk = tokenAsk.div(poolToken);
-        const pxBid = tokenBid.div(poolToken);
-
-        const pxSpread = (pxAsk.minus(pxBid)).div(pxAsk);
-        */
-        const pxBid = poolToken.div(tokenAsk);
-        const pxAsk = poolToken.div(tokenBid);
+        console.log(`Redeemed ${pool} tokens to get ${underlying} for ${underName}`);
+        const pxBidRaw = BN(underConvertor[underName].fromNative(underlying));
+        const pxBid = pxBidRaw.div(BN(nominalAmt));
 
         const pxSpread = (pxAsk.minus(pxBid)).div(pxAsk);
 
